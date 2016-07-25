@@ -133,6 +133,7 @@ def main():
             bot.login()
             bot.run()
             if bot.surfed_sites >= MAX_SURFED_SITES:
+                accounts.remove(account)  # delete processed accounts
                 if bot.isLoggedIn:
                     bot.logout()
                 if not bot.isLoggedIn:
