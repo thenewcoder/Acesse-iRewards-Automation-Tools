@@ -3,11 +3,18 @@ from os import system, remove
 
 
 def extractor(name):
+    """Goes through the captcha image and lines up
+       the individual numbers to increase the chance
+       of extracting the numbers"""
+    
     im = Image.open(name)
 
+    # prepare new cleaned image surface
     im2 = Image.new("P", im.size, 255)
 
-    currentNumber = 0
+    currentNumber = 0  # current number being scanned
+
+    # Measurements about the numbers in the captcha
 #                  top bot left right
     numbers = {"1": [500, 0, 0, 0],
                "2": [500, 0, 0, 0],
@@ -47,8 +54,10 @@ def extractor(name):
             emptyXSpace.append(x)  # recording empty x coordinates
         gotBlackPixel = False
 
+    # save image with newely cleaned image
     im2.save("alignNumbers.gif")
 
+    # prepare the final image surface
     im3 = Image.new("P", im.size, 255)
 
     currentNumber = 0
@@ -60,6 +69,7 @@ def extractor(name):
     row = 10  # the row from where to start drawing numbers
     newNumber = True
 
+    # create the new image
     for x in range(im2.size[0]):
         for y in range(im2.size[1]):
             pix = im2.getpixel((x, y))
@@ -86,8 +96,10 @@ def extractor(name):
             lastRowEmpty = True
         gotBlackPixel = False
 
+    # save the final image - cleaned and aligned
     im3.save("output.gif")
 
+    # use tesseract to extract the numbers - saving to text file
     system("tesseract output.gif result -psm 8")
 
     # read in numbers from output file
